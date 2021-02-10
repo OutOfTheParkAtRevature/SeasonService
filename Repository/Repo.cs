@@ -13,17 +13,17 @@ namespace Repository
     {
         private readonly SeasonContext _seasonContext;
         private readonly ILogger _logger;
-        public DbSet<Game> games;
-        public DbSet<PlayerGame> playerGames;
-        public DbSet<Season> seasons;
+        public DbSet<Game> Games;
+        public DbSet<PlayerGame> PlayerGames;
+        public DbSet<Season> Seasons;
 
         public Repo(SeasonContext seasonContext, ILogger<Repo> logger)
         {
             _seasonContext = seasonContext;
             _logger = logger;
-            this.games = _seasonContext.games;
-            this.playerGames = _seasonContext.playerGames;
-            this.seasons = _seasonContext.seasons;
+            this.Games = _seasonContext.Games;
+            this.PlayerGames = _seasonContext.PlayerGames;
+            this.Seasons = _seasonContext.Seasons;
         }
 
         public async Task CommitSave()
@@ -33,27 +33,35 @@ namespace Repository
 
         public async Task<Game> GetGameById(Guid ID)
         {
-            return await games.FindAsync(ID);
+            return await Games.FindAsync(ID);
         }
         public async Task<IEnumerable<Game>> GetGames()
         {
-            return await games.ToListAsync();
+            return await Games.ToListAsync();
         }
-        public async Task<PlayerGame> GetPlayerGameById(Guid ID)
+        public async Task<PlayerGame> GetPlayerGameById(string playerId, Guid gameId)
         {
-            return await playerGames.FindAsync(ID);
+            return await PlayerGames.FirstOrDefaultAsync(x => x.UserID == playerId && x.GameID == gameId);
         }
         public async Task<IEnumerable<PlayerGame>> GetPlayerGames()
         {
-            return await playerGames.ToListAsync();
+            return await PlayerGames.ToListAsync();
+        }
+        public async Task<IEnumerable<PlayerGame>> GetPlayerGamesByPlayerId(string playerId)
+        {
+            return await PlayerGames.Where(x => x.UserID == playerId).ToListAsync();
+        }
+        public async Task<IEnumerable<PlayerGame>> GetPlayerGamesByGameId(Guid gameId)
+        {
+            return await PlayerGames.Where(x => x.GameID == gameId).ToListAsync();
         }
         public async Task<Season> GetSeasonById(Guid ID)
         {
-            return await seasons.FindAsync(ID);
+            return await Seasons.FindAsync(ID);
         }
         public async Task<IEnumerable<Season>> GetSeasons()
         {
-            return await seasons.ToListAsync();
+            return await Seasons.ToListAsync();
         }
     }
 }
