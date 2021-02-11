@@ -10,11 +10,11 @@ namespace Model
 {
     public class PlayerGame
     {
-        [Key]
         [DisplayName("User ID")]
-        public Guid UserID { get; set; }
+        public string UserID { get; set; }
         [DisplayName("Game ID")]
         public Guid GameID { get; set; }
+        [DisplayName("Stat Line")]
         public Guid StatLineID { get; set; }
     }
 }

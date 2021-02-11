@@ -10,12 +10,18 @@ namespace Repository
 {
     public class SeasonContext : DbContext
     {
-        public DbSet<Game> games;
-        public DbSet<PlayerGame> playerGames;
-        public DbSet<Season> seasons;
+        public DbSet<Game> Games;
+        public DbSet<PlayerGame> PlayerGames;
+        public DbSet<Season> Seasons;
 
         public SeasonContext() { }
 
         public SeasonContext(DbContextOptions<SeasonContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PlayerGame>()
+                .HasKey(c => new { c.UserID, c.GameID });
+        }
     }
 }
