@@ -31,8 +31,8 @@ namespace Model.Tests
             {
                 var season = new Season()
                 {
-                     SeasonID = 1,
-                     LeagueID = 2
+                     SeasonID = Guid.NewGuid(),
+                     LeagueID = Guid.NewGuid()
                 };
 
                 var results = ValidateModel(season);
