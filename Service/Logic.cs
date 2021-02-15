@@ -74,6 +74,13 @@ namespace Service
             }
             return editedGame;
         }
+        /// <summary>
+        /// creates a PlayerGame with the passed in parameters, adds the PlayerGameto the 
+        /// playerGames repo dbset
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
         public async Task<PlayerGame> BuildPlayerGame(string playerId, Guid gameId)
         {
             PlayerGame pGame = new PlayerGame()
