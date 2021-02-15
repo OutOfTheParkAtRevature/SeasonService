@@ -31,8 +31,9 @@ namespace Model.Tests
         {
             var playerGame = new PlayerGame()
             {
-                SeasonID = 1,
-                LeagueID = 2
+                UserID = "123557",
+                GameID = Guid.NewGuid(),
+                StatLineID = Guid.NewGuid()
             };
 
             var results = ValidateModel(playerGame);

@@ -10,9 +10,9 @@ namespace Repository
 {
     public class SeasonContext : DbContext
     {
-        public DbSet<Game> Games;
-        public DbSet<PlayerGame> PlayerGames;
-        public DbSet<Season> Seasons;
+        public DbSet<Game> Games { get; set; }
+        public DbSet<PlayerGame> PlayerGames { get; set; }
+        public DbSet<Season> Seasons { get; set; }
 
         public SeasonContext() { }
 

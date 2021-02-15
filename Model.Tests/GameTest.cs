@@ -29,24 +29,26 @@ namespace Model.Tests
             /// Makes sure Game Model works with valid data
             /// </summary>
             [Fact]
-        public void ValidateGame()
-        {
-            var game = new Game()
+            public void ValidateGame()
             {
-                GameID = 1,
-                SeasonID = 2,
-                HomeTeamID = 1,
-                AwayTeamID = 2,
-                GameDate = DateTime.UtcNow,
-                WinningTeam = 1,
-                HomeScore = 24,
-                AwayScore = 12,
-                HomeStatID = 5,
-                AwayStatID = 6
-            };
+                var game = new Game()
+                {
+                    GameID = Guid.NewGuid(),
+                    SeasonID = Guid.NewGuid(),
+                    HomeTeamID = Guid.NewGuid(),
+                    AwayTeamID = Guid.NewGuid(),
+                    GameDate = DateTime.UtcNow,
+                    WinningTeam = Guid.NewGuid(),
+                    HomeScore = 24,
+                    AwayScore = 12,
+                    HomeStatID = Guid.NewGuid(),
+                    AwayStatID = Guid.NewGuid()
+                };
 
-            var results = ValidateModel(game);
-            Assert.True(results.Count == 0);
+                var results = ValidateModel(game);
+                Assert.True(results.Count == 0);
+            }
         }
     }
 }
+
