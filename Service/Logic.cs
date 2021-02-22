@@ -5,6 +5,8 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,6 +54,33 @@ namespace Service
                 GameDate = createGameDto.GameDate
             };
             await _repo.Games.AddAsync(newGame);
+            
+            // Create Calendar event for game
+            string homeTeam = "";
+            string awayTeam = "";
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync($"api/Team/{newGame.HomeTeamID}");
+                homeTeam = response.ToString();
+            }
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync($"api/Team/{newGame.AwayTeamID}");
+                awayTeam = response.ToString();
+            }
+            
+            EventDto eDto = new EventDto()
+            {
+                Description = $"Game - {awayTeam} @ {homeTeam}",
+                Location = $"{homeTeam}",
+                StartTime = newGame.GameDate,
+                EndTime = newGame.GameDate.AddMinutes(60)
+            };
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsJsonAsync($"api/Calendar", eDto);
+            }
+            
             await _repo.CommitSave();
             return newGame;
         }
