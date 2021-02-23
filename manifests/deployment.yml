@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: season-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: season-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: season-service
+    spec:
+      # volumes:
+      #   - name: azure-disk-user
+      #     persistentVolumeClaim:
+      #       claimName: user-pv-claim
+      containers:
+        # - env:
+            # use secret in future
+            # - name: ConnectionString
+            #   value: 'data source=sql-user;database=azure-disk-user;user id=sa;password=password_here;'
+            # - name: ConnectionString
+            #   value: 'Server=tcp:out-of-the-park-sql-server.database.windows.net,1433;Initial Catalog=user-service-db;Persist Security Info=False;User ID=p3-admin;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+        - name: season-service
+          image: outofthepark15226.azurecr.io/season-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: season-http
+
+        # - env:
+        #   - name: ACCEPT_EULA
+        #     value: "y" 
+        #   - name: SA_PASSWORD
+        #   #make this into secret
+        #     value: password_here
+        #   image: mcr.microsoft.com/mssql/server:2019-latest
+        #   name: sql-user
+        #   ports:
+        #     - containerPort: 1433
+        #   volumeMounts:
+        #     - name: azure-disk-user
+        #       mountPath: /var/opt/mssql/data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: season-service-deployment
+spec:
+  ports:
+    - name: season-service
+      port: 80
+      targetPort: season-http
+  selector:
+    app: season-service
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: season-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: season-service.1c50b018f5784721b39b.eastus.aksapp.io
+    http:
+      paths:
+      - pathType: Prefix
+        backend:
+          serviceName: season-service-deployment
+          servicePort: 80
+        path: /api/season-service/gateway(/|$)(.*)
