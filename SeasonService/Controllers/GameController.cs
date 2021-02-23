@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Models.DataTransfer;
@@ -38,8 +39,9 @@ namespace SeasonService.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto createGameDto)
         {
+            var token = await HttpContext.GetTokenAsync("access_token");
             if (await _logic.GameExists(createGameDto) == true) return Conflict("A game with those teams is already scheduled for that day.");
-            return Ok(await _logic.CreateGame(createGameDto));
+            return Ok(await _logic.CreateGame(createGameDto, token));
         }
 
         [HttpPut("{id}")]
