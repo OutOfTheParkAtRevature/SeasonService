@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Model;
@@ -89,16 +90,31 @@ namespace Service
             }
             return false;
         }
+=======
+﻿using System;
+
+namespace Logic
+{
+    public class Logic
+    {
+>>>>>>> Stashed changes
         /// <summary>
         /// Get a Game by GameID
         /// </summary>
         /// <param name="id">GameID</param>
         /// <returns>Game</returns>
+<<<<<<< Updated upstream
         public async Task<Game> GetGameById(Guid id)
         {
             return await _repo.GetGameById(id);
         }
 
+=======
+        public async Task<Game> GetGameById(int id)
+        {
+            return await _repo.GetGameById(id);
+        }
+>>>>>>> Stashed changes
         /// <summary>
         /// Get a list of Games
         /// </summary>
@@ -107,7 +123,10 @@ namespace Service
         {
             return await _repo.GetGames();
         }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         /// <summary>
         /// Create a new Game
         /// </summary>
@@ -115,6 +134,7 @@ namespace Service
         /// <returns>Game</returns>
         public async Task<Game> CreateGame(CreateGameDto createGameDto)
         {
+<<<<<<< Updated upstream
             IEnumerable<Season> seasons = await _repo.GetSeasons();
             Game newGame = new Game()
             {
@@ -155,12 +175,25 @@ namespace Service
             return newGame;
         }
 
+=======
+            Game newGame = new Game()
+            {
+                HomeTeamID = createGameDto.HomeTeamID,
+                AwayTeamID = createGameDto.AwayTeamID,
+                GameDate = createGameDto.GameDate
+            };
+            await _repo.games.AddAsync(newGame);
+            await _repo.CommitSave();
+            return newGame;
+        }
+>>>>>>> Stashed changes
         /// <summary>
         /// Edit a Game
         /// </summary>
         /// <param name="id">GameID</param>
         /// <param name="editGameDto">New information</param>
         /// <returns>modified Game</returns>
+<<<<<<< Updated upstream
         public async Task<Game> EditGame(Guid id, EditGameDto editGameDto)
         {
             Game editedGame = await GetGameById(id);
@@ -187,6 +220,22 @@ namespace Service
             }
             await _repo.CommitSave();
             return true;
+=======
+        public async Task<Game> EditGame(int id, EditGameDto editGameDto)
+        {
+            Game editedGame = await GetGameById(id);
+            if (editedGame != null)
+            {
+                if (editedGame.WinningTeam != editGameDto.WinningTeamID) { editedGame.WinningTeam = editGameDto.WinningTeamID; }
+                if (editedGame.HomeScore != editGameDto.HomeScore) { editedGame.HomeScore = editGameDto.HomeScore; }
+                if (editedGame.AwayScore != editGameDto.AwayScore) { editedGame.AwayScore = editGameDto.AwayScore; }
+                if (editedGame.Statistic1 != editGameDto.Statistic1) { editedGame.Statistic1 = editGameDto.Statistic1; }
+                if (editedGame.Statistic2 != editGameDto.Statistic2) { editedGame.Statistic2 = editGameDto.Statistic2; }
+                if (editedGame.Statistic3 != editGameDto.Statistic3) { editedGame.Statistic3 = editGameDto.Statistic3; }
+                await _repo.CommitSave();
+            }
+            return editedGame;
+>>>>>>> Stashed changes
         }
     }
 }
