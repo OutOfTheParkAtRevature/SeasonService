@@ -113,7 +113,7 @@ namespace Service
         /// </summary>
         /// <param name="createGameDto">Game from input</param>
         /// <returns>Game</returns>
-        public async Task<Game> CreateGame(CreateGameDto createGameDto)
+        public async Task<Game> CreateGame(CreateGameDto createGameDto, string token)
         {
             IEnumerable<Season> seasons = await _repo.GetSeasons();
             Game newGame = new Game()
@@ -130,11 +130,13 @@ namespace Service
             string awayTeam = "";
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await httpClient.GetAsync($"api/Team/{newGame.HomeTeamID}");
                 homeTeam = response.ToString();
             }
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await httpClient.GetAsync($"api/Team/{newGame.AwayTeamID}");
                 awayTeam = response.ToString();
             }
@@ -148,6 +150,7 @@ namespace Service
             };
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await httpClient.PostAsJsonAsync($"api/Calendar", eDto);
             }
             

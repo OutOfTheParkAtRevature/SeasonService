@@ -27,7 +27,7 @@ namespace Model
         public int HomeScore { get; set; }
         [DisplayName("Away Score")]
         public int AwayScore { get; set; }
-        public Guid HomeStatID { get; set; }
-        public Guid AwayStatID { get; set; }
+        public Guid? HomeStatID { get; set; }
+        public Guid? AwayStatID { get; set; }
     }
 }
