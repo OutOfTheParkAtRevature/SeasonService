@@ -1,2 +1,2 @@
-# GameService
-Game Microservice API Repo
+# SeasonService
+Season Microservice API Repo
