@@ -9,15 +9,16 @@ namespace Models.DataTransfer
 {
     public class EditGameDto
     {
+        public DateTime? GameDate { get; set; }
         [DisplayName("Winning Team ID")]
-        public Guid WinningTeamID { get; set; }
+        public Guid? WinningTeamID { get; set; }
         [DisplayName("Home Score")]
-        public int HomeScore { get; set; }
+        public int? HomeScore { get; set; }
         [DisplayName("Away Score")]
-        public int AwayScore { get; set; }
+        public int? AwayScore { get; set; }
         [DisplayName("Home Stats")]
-        public Guid HomeStatID { get; set; }
+        public Guid? HomeStatID { get; set; }
         [DisplayName("Away Stats")]
-        public Guid AwayStatID { get; set; }
+        public Guid? AwayStatID { get; set; }
     }
 }
