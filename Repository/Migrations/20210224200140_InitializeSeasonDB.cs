@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class m1 : Migration
+    public partial class InitializeSeasonDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,8 +19,8 @@ namespace Repository.Migrations
                     WinningTeam = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HomeScore = table.Column<int>(type: "int", nullable: false),
                     AwayScore = table.Column<int>(type: "int", nullable: false),
-                    HomeStatID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AwayStatID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    HomeStatID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    AwayStatID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
