@@ -131,13 +131,13 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"api/Team/{newGame.HomeTeamID}");
+                var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{newGame.HomeTeamID}");
                 homeTeam = response.ToString();
             }
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"api/Team/{newGame.AwayTeamID}");
+                var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{newGame.AwayTeamID}");
                 awayTeam = response.ToString();
             }
             
@@ -151,7 +151,7 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.PostAsJsonAsync($"api/Calendar", eDto);
+                var response = await httpClient.PostAsJsonAsync($"http://20.185.102.169:80/api/Calendar", eDto);
             }
             
             await _repo.CommitSave();

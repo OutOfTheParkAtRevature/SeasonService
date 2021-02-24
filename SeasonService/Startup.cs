@@ -43,7 +43,7 @@ namespace SeasonService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SeasonService", Version = "v1" });
             });
 
-            services.AddDbContext<SeasonContext>(options => options.UseSqlServer(_configuration.GetConnectionString("LocalDB")));
+            services.AddDbContext<SeasonContext>(options => options.UseSqlServer(_configuration.GetConnectionString("AzureDB")));
 
             var identityUrl = _configuration.GetValue<string>("IdentityUrl");
             var jwtSettings = _configuration.GetSection("JwtSettings");
