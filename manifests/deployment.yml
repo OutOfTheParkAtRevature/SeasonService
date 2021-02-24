@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: season-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: season-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: season-service
+    spec:
+      containers:
+        - name: season-service
+          image: outofthepark15226.azurecr.io/season-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: season-http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: season-service-deployment
+spec:
+  ports:
+    - name: season-service
+      port: 80
+      targetPort: season-http
+  selector:
+    app: season-service
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: season-service-ingress
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: season-service.1c50b018f5784721b39b.eastus.aksapp.io
+    http:
+      paths:
+      - pathType: Prefix
+        backend:
+          serviceName: season-service-deployment
+          servicePort: 80
+        path: /season(/|$)(.*)
+
