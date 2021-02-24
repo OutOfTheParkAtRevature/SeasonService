@@ -191,19 +191,21 @@ namespace Service
             await _repo.Games.AddAsync(newGame);
             
             // Create Calendar event for game
-            string homeTeam = "";
-            string awayTeam = "";
+            Team homeTeam = new Team();
+            Team awayTeam = new Team();
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{newGame.HomeTeamID}");
-                homeTeam = response.ToString();
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{newGame.AwayTeamID}");
-                awayTeam = response.ToString();
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }
             
             EventDto eDto = new EventDto()
