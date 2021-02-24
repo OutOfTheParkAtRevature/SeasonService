@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Model;
+using Model.DataTransfer;
 using Models.DataTransfer;
 using Newtonsoft.Json;
 using Repository;
@@ -56,7 +57,7 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync("https://localhost:44313/api/League");
+                var response = await httpClient.GetAsync("http://20.62.247.144/api/League");
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var league = JsonConvert.DeserializeObject<List<League>>(apiResponse);
                 season.LeagueID = league[0].LeagueID;
@@ -94,18 +95,82 @@ namespace Service
         /// </summary>
         /// <param name="id">GameID</param>
         /// <returns>Game</returns>
-        public async Task<Game> GetGameById(Guid id)
+        public async Task<GameDto> GetGameById(Guid id, string token)
         {
-            return await _repo.GetGameById(id);
+            Game game = await _repo.GetGameById(id);
+            if (game == null) return null;
+            Team homeTeam = new Team();
+            Team awayTeam = new Team();
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{game.HomeTeamID}");
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+
+                response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{game.AwayTeamID}");
+                apiResponse = await response.Content.ReadAsStringAsync();
+                awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+            }
+            GameDto gameDto = new GameDto
+            {
+                GameID = game.GameID,
+                GameDate = game.GameDate,
+                HomeScore = game.HomeScore,
+                AwayScore = game.AwayScore,
+                AwayTeam = awayTeam,
+                HomeTeam = homeTeam,
+                HomeTeamID = game.HomeTeamID,
+                AwayTeamID = game.AwayTeamID,
+                SeasonID = game.SeasonID,
+                WinningTeamID = game.WinningTeam 
+            };
+            if (game.WinningTeam == game.AwayTeamID) gameDto.WinningTeam = awayTeam;
+            if (game.WinningTeam == game.HomeTeamID) gameDto.WinningTeam = homeTeam;
+            return gameDto;
         }
 
         /// <summary>
         /// Get a list of Games
         /// </summary>
         /// <returns>list of Games</returns>
-        public async Task<IEnumerable<Game>> GetGames()
+        public async Task<IEnumerable<GameDto>> GetGames(string token)
         {
-            return await _repo.GetGames();
+            IEnumerable<Game> games = await _repo.GetGames();
+            List<GameDto> gameDtos = new List<GameDto>();
+            foreach(Game g in games)
+            {
+                Team homeTeam = new Team();
+                Team awayTeam = new Team();
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    var response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{g.HomeTeamID}");
+                    var apiResponse = await response.Content.ReadAsStringAsync();
+                    homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+
+                    response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{g.AwayTeamID}");
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+                }
+                GameDto gameDto = new GameDto
+                {
+                    GameID = g.GameID,
+                    GameDate = g.GameDate,
+                    HomeScore = g.HomeScore,
+                    AwayScore = g.AwayScore,
+                    AwayTeam = awayTeam,
+                    HomeTeam = homeTeam,
+                    HomeTeamID = g.HomeTeamID,
+                    AwayTeamID = g.AwayTeamID,
+                    SeasonID = g.SeasonID,
+                    WinningTeamID = g.WinningTeam
+                };
+                if (g.WinningTeam == g.AwayTeamID) gameDto.WinningTeam = awayTeam;
+                if (g.WinningTeam == g.HomeTeamID) gameDto.WinningTeam = homeTeam;
+                gameDtos.Add(gameDto);
+            }
+            return gameDtos;
         }
 
         /// <summary>
@@ -113,7 +178,7 @@ namespace Service
         /// </summary>
         /// <param name="createGameDto">Game from input</param>
         /// <returns>Game</returns>
-        public async Task<Game> CreateGame(CreateGameDto createGameDto, string token)
+        public async Task<GameDto> CreateGame(CreateGameDto createGameDto, string token)
         {
             IEnumerable<Season> seasons = await _repo.GetSeasons();
             Game newGame = new Game()
@@ -126,24 +191,23 @@ namespace Service
             await _repo.Games.AddAsync(newGame);
             
             // Create Calendar event for game
-            string homeTeam = "";
-            string awayTeam = "";
+            Team homeTeam = new Team();
+            Team awayTeam = new Team();
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"api/Team/{newGame.HomeTeamID}");
-                homeTeam = response.ToString();
-            }
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"api/Team/{newGame.AwayTeamID}");
-                awayTeam = response.ToString();
+                var response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{newGame.HomeTeamID}");
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+
+                response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{newGame.AwayTeamID}");
+                apiResponse = await response.Content.ReadAsStringAsync();
+                awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }
             
             EventDto eDto = new EventDto()
             {
-                Description = $"Game - {awayTeam} @ {homeTeam}",
+                Description = $"Game - {awayTeam.Name} @ {homeTeam.Name}",
                 Location = $"{homeTeam}",
                 StartTime = newGame.GameDate,
                 EndTime = newGame.GameDate.AddMinutes(60)
@@ -155,7 +219,18 @@ namespace Service
             }
             
             await _repo.CommitSave();
-            return newGame;
+            GameDto gameDto = new GameDto
+            {
+                GameID = newGame.GameID,
+                GameDate = newGame.GameDate,
+                SeasonID = newGame.SeasonID,
+                AwayTeam = awayTeam,
+                HomeTeam = homeTeam,
+                AwayTeamID = newGame.AwayTeamID,
+                HomeTeamID = newGame.HomeTeamID
+            };
+
+            return gameDto;
         }
 
         /// <summary>
@@ -164,9 +239,9 @@ namespace Service
         /// <param name="id">GameID</param>
         /// <param name="editGameDto">New information</param>
         /// <returns>modified Game</returns>
-        public async Task<Game> EditGame(Guid id, EditGameDto editGameDto)
+        public async Task<GameDto> EditGame(Guid id, EditGameDto editGameDto, string token)
         {
-            Game editedGame = await GetGameById(id);
+            Game editedGame = await _repo.GetGameById(id);
 
             if (editedGame.GameDate != editGameDto.GameDate && editGameDto.GameDate != null) { editedGame.GameDate = (DateTime)editGameDto.GameDate; }
             if (editedGame.WinningTeam != editGameDto.WinningTeamID && editGameDto.GameDate != null) { editedGame.WinningTeam = (Guid)editGameDto.WinningTeamID; }
@@ -174,12 +249,42 @@ namespace Service
             if (editedGame.AwayScore != editGameDto.AwayScore && editGameDto.GameDate != null) { editedGame.AwayScore = (int)editGameDto.AwayScore; }
 
             await _repo.CommitSave();
-            return editedGame;
+
+            
+            Team homeTeam = new Team();
+            Team awayTeam = new Team();
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{editedGame.HomeTeamID}");
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+
+                response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{editedGame.AwayTeamID}");
+                apiResponse = await response.Content.ReadAsStringAsync();
+                awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
+            }
+            GameDto gameDto = new GameDto
+            {
+                GameID = editedGame.GameID,
+                GameDate = editedGame.GameDate,
+                HomeScore = editedGame.HomeScore,
+                AwayScore = editedGame.AwayScore,
+                AwayTeam = awayTeam,
+                HomeTeam = homeTeam,
+                HomeTeamID = editedGame.HomeTeamID,
+                AwayTeamID = editedGame.AwayTeamID,
+                SeasonID = editedGame.SeasonID,
+                WinningTeamID = editedGame.WinningTeam
+            };
+            if (editedGame.WinningTeam == editedGame.AwayTeamID) gameDto.WinningTeam = awayTeam;
+            if (editedGame.WinningTeam == editedGame.HomeTeamID) gameDto.WinningTeam = homeTeam;
+            return gameDto;
         }    
         
         public async Task<bool> DeleteGame(Guid id)
         {
-            Game game = await GetGameById(id);
+            Game game = await _repo.GetGameById(id);
             try
             {
                 _repo.Games.Remove(game);

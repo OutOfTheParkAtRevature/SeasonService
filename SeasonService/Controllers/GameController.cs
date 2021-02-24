@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Model.DataTransfer;
 using Models.DataTransfer;
 using Service;
 using System;
@@ -23,20 +25,25 @@ namespace SeasonService.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<IActionResult> GetGames()
         {
-            return Ok(await _logic.GetGames());
+            var token = await HttpContext.GetTokenAsync("access_token");
+            return Ok(await _logic.GetGames(token));
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<IActionResult> GetGameById(Guid id)
         {
-            Game game = await _logic.GetGameById(id);
+            var token = await HttpContext.GetTokenAsync("access_token");
+            GameDto game = await _logic.GetGameById(id,token);
             if (game == null) return NotFound("No Game with that ID was found.");
             return Ok(game);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, League Manager, Head Coach")]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto createGameDto)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -45,17 +52,21 @@ namespace SeasonService.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, League Manager, Head Coach")]
         public async Task<IActionResult> EditGame(Guid id, [FromBody] EditGameDto editGameDto)
         {
-            if (await _logic.GetGameById(id) == null) return NotFound("Game with that ID was not found.");
-            return Ok(await _logic.EditGame(id, editGameDto));
+            var token = await HttpContext.GetTokenAsync("access_token");
+            if (await _logic.GetGameById(id,token) == null) return NotFound("Game with that ID was not found.");
+            return Ok(await _logic.EditGame(id, editGameDto,token));
 
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles="Admin, League Manager, Head Coach")]
         public async Task<IActionResult> DeleteGame(Guid id)
         {
-            if (await _logic.GetGameById(id) == null) return NotFound("Game with that ID was not found.");
+            var token = await HttpContext.GetTokenAsync("access_token");
+            if (await _logic.GetGameById(id,token) == null) return NotFound("Game with that ID was not found.");
             bool result = await _logic.DeleteGame(id);
             if (result) return Ok("Game deleted.");
             return NotFound("Game with that ID was already deleted.");
