@@ -29,15 +29,15 @@ namespace SeasonService.Controllers
         public async Task<IActionResult> GetGames()
         {
             var token = await HttpContext.GetTokenAsync("access_token");
-            return Ok(await _logic.GetGames(token));
+            return Ok(await _logic.GetGames());
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<IActionResult> GetGameById(Guid id)
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
-            GameDto game = await _logic.GetGameById(id,token);
+
+            Game game = await _logic.GetGameById(id);
             if (game == null) return NotFound("No Game with that ID was found.");
             return Ok(game);
         }
@@ -56,8 +56,8 @@ namespace SeasonService.Controllers
         public async Task<IActionResult> EditGame(Guid id, [FromBody] EditGameDto editGameDto)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
-            if (await _logic.GetGameById(id,token) == null) return NotFound("Game with that ID was not found.");
-            return Ok(await _logic.EditGame(id, editGameDto,token));
+            if (await _logic.GetGameById(id) == null) return NotFound("Game with that ID was not found.");
+            return Ok(await _logic.EditGame(id, editGameDto));
 
         }
 
@@ -66,7 +66,7 @@ namespace SeasonService.Controllers
         public async Task<IActionResult> DeleteGame(Guid id)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
-            if (await _logic.GetGameById(id,token) == null) return NotFound("Game with that ID was not found.");
+            if (await _logic.GetGameById(id) == null) return NotFound("Game with that ID was not found.");
             bool result = await _logic.DeleteGame(id);
             if (result) return Ok("Game deleted.");
             return NotFound("Game with that ID was already deleted.");
