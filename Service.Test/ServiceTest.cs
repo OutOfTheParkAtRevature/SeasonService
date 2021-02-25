@@ -119,87 +119,87 @@ namespace Service.Test
         }
 
 
-        [Fact]
-        public async void TestGetGameById()
-        {
-            var options = new DbContextOptionsBuilder<SeasonContext>()
-            .UseInMemoryDatabase(databaseName: "p3SeasonService")
-            .Options;
+        //[Fact]
+        //public async void TestGetGameById()
+        //{
+        //    var options = new DbContextOptionsBuilder<SeasonContext>()
+        //    .UseInMemoryDatabase(databaseName: "p3SeasonService")
+        //    .Options;
 
-            using (var context = new SeasonContext(options))
-            {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+        //    using (var context = new SeasonContext(options))
+        //    {
+        //        context.Database.EnsureDeleted();
+        //        context.Database.EnsureCreated();
 
-                Repo r = new Repo(context, new NullLogger<Repo>());
-                Logic l = new Logic(r, new NullLogger<Repo>());
-
-
-                var game = new Game
-                {
-                    GameID = Guid.NewGuid(),
-                    SeasonID = Guid.NewGuid(),
-                    HomeTeamID = Guid.NewGuid(),
-                    AwayTeamID = Guid.NewGuid(),
-                    GameDate = DateTime.Now,
-                    WinningTeam = Guid.NewGuid(),
-                    HomeScore = 15,
-                    AwayScore = 19,
-                    HomeStatID = Guid.NewGuid(),
-                    AwayStatID = Guid.NewGuid()
-                };
+        //        Repo r = new Repo(context, new NullLogger<Repo>());
+        //        Logic l = new Logic(r, new NullLogger<Repo>());
 
 
-                r.Games.Add(game);
-                await r.CommitSave();
-                var getGameById = await l.GetGameById(game.GameID);
-                Assert.NotNull(getGameById);
-
-            }
-
-        }
-
-
-        [Fact]
-        public async void TestGetGames()
-        {
-            var options = new DbContextOptionsBuilder<SeasonContext>()
-            .UseInMemoryDatabase(databaseName: "p3SeasonService")
-            .Options;
-
-            using (var context = new SeasonContext(options))
-            {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-
-                Repo r = new Repo(context, new NullLogger<Repo>());
-                Logic l = new Logic(r, new NullLogger<Repo>());
+        //        var game = new Game
+        //        {
+        //            GameID = Guid.NewGuid(),
+        //            SeasonID = Guid.NewGuid(),
+        //            HomeTeamID = Guid.NewGuid(),
+        //            AwayTeamID = Guid.NewGuid(),
+        //            GameDate = DateTime.Now,
+        //            WinningTeam = Guid.NewGuid(),
+        //            HomeScore = 15,
+        //            AwayScore = 19,
+        //            HomeStatID = Guid.NewGuid(),
+        //            AwayStatID = Guid.NewGuid()
+        //        };
 
 
+        //        r.Games.Add(game);
+        //        await r.CommitSave();
+        //        var getGameById = await l.GetGameById(game.GameID);
+        //        Assert.NotNull(getGameById);
 
-                var game = new Game
-                {
-                    GameID = Guid.NewGuid(),
-                    SeasonID = Guid.NewGuid(),
-                    HomeTeamID = Guid.NewGuid(),
-                    AwayTeamID = Guid.NewGuid(),
-                    GameDate = DateTime.Now,
-                    WinningTeam = Guid.NewGuid(),
-                    HomeScore = 15,
-                    AwayScore = 19,
-                    HomeStatID = Guid.NewGuid(),
-                    AwayStatID = Guid.NewGuid()
-                };
+        //    }
+
+        //}
 
 
-                r.Games.Add(game);
-                await r.CommitSave();
-                var getGames = await l.GetGames();
-                Assert.NotNull(getGames);
+        //[Fact]
+        //public async void TestGetGames()
+        //{
+        //    var options = new DbContextOptionsBuilder<SeasonContext>()
+        //    .UseInMemoryDatabase(databaseName: "p3SeasonService")
+        //    .Options;
 
-            }
+        //    using (var context = new SeasonContext(options))
+        //    {
+        //        context.Database.EnsureDeleted();
+        //        context.Database.EnsureCreated();
 
-        }
+        //        Repo r = new Repo(context, new NullLogger<Repo>());
+        //        Logic l = new Logic(r, new NullLogger<Repo>());
+
+
+
+        //        var game = new Game
+        //        {
+        //            GameID = Guid.NewGuid(),
+        //            SeasonID = Guid.NewGuid(),
+        //            HomeTeamID = Guid.NewGuid(),
+        //            AwayTeamID = Guid.NewGuid(),
+        //            GameDate = DateTime.Now,
+        //            WinningTeam = Guid.NewGuid(),
+        //            HomeScore = 15,
+        //            AwayScore = 19,
+        //            HomeStatID = Guid.NewGuid(),
+        //            AwayStatID = Guid.NewGuid()
+        //        };
+
+
+        //        r.Games.Add(game);
+        //        await r.CommitSave();
+        //        var getGames = await l.GetGames();
+        //        Assert.NotNull(getGames);
+
+        //    }
+
+        //}
        
 
     }
