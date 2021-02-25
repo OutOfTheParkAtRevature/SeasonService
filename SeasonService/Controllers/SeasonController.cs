@@ -44,7 +44,6 @@ namespace SeasonService.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateSeason()
         {
             var token = await HttpContext.GetTokenAsync("access_token");

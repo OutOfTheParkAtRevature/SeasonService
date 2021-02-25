@@ -25,7 +25,6 @@ namespace SeasonService.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<IActionResult> GetGames()
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -33,7 +32,6 @@ namespace SeasonService.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach, Assistant Coach, Parent, Player")]
         public async Task<IActionResult> GetGameById(Guid id)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -43,7 +41,6 @@ namespace SeasonService.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, League Manager, Head Coach")]
         public async Task<IActionResult> CreateGame([FromBody] CreateGameDto createGameDto)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -52,7 +49,6 @@ namespace SeasonService.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, League Manager, Head Coach")]
         public async Task<IActionResult> EditGame(Guid id, [FromBody] EditGameDto editGameDto)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -62,7 +58,6 @@ namespace SeasonService.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles="Admin, League Manager, Head Coach")]
         public async Task<IActionResult> DeleteGame(Guid id)
         {
             var token = await HttpContext.GetTokenAsync("access_token");
