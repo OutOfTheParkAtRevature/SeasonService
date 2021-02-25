@@ -12,7 +12,7 @@ Allows League Managers to create a season, and to create, edit, and delete game 
 * add an end time
 * DTO for creating a game
 * DTO for editing a game
-* 
+
 
 ## Links
 This Repository is part of an application designed with a Microservice Architecture. The other parts of the application are listed below:
