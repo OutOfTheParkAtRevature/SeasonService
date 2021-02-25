@@ -9,7 +9,6 @@ variables:
   tag: '$(Build.BuildId)'
   imagePullSecret: 'season'
 
-
 stages:
   - stage: 'Analyze'
     displayName: Analyze
@@ -31,7 +30,7 @@ stages:
               projectName: OutOfTheParkSeasonService
               scannerMode: MSBuild
               extraProperties: |
-                sonar.exclusions=**/obj/**,**/lib/**,**/*.dll,**/Startup.cs,**/Program.cs,**/Migrations/**
+                sonar.exclusions=**/obj/**,**/lib/**,**/*.dll
           - script: dotnet build --configuration Release
             displayName: Analyze Build
           - task: DotNetCoreCLI@2
@@ -52,12 +51,12 @@ stages:
   - stage: 'Build'
     displayName: Build and push
     jobs:
-      - job: Build
+      - job: register
         pool:
           vmImage: ubuntu-latest
         steps:
-          - task: Docker@2
-            inputs:
+           - task: Docker@2
+             inputs:
               command: buildAndPush
               buildContext: $(Build.Repository.LocalPath)
               repository: $(seasonRepository)
@@ -66,8 +65,8 @@ stages:
               tags: |
                 $(tag)
           
-          - publish: '$(Build.SourcesDirectory)/manifests'
-            artifact: manifests
+           - publish: '$(Build.SourcesDirectory)/manifests'
+             artifact: manifests
   - stage: 'Deploy'
     displayName: 'Deploy the containers'
     dependsOn: Build
