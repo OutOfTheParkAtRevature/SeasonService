@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class InitializeSeasonDB : Migration
+    public partial class seasonmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -57,7 +57,7 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync("http://20.62.247.144/api/League");
+                var response = await httpClient.GetAsync("http://10.0.118.116/api/League");
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 var league = JsonConvert.DeserializeObject<List<League>>(apiResponse);
                 season.LeagueID = league[0].LeagueID;
@@ -104,11 +104,11 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{game.HomeTeamID}");
+                var response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{game.HomeTeamID}");
                 var apiResponse = await response.Content.ReadAsStringAsync();
                 homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
 
-                response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{game.AwayTeamID}");
+                response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{game.AwayTeamID}");
                 apiResponse = await response.Content.ReadAsStringAsync();
                 awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }
@@ -145,11 +145,11 @@ namespace Service
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    var response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{g.HomeTeamID}");
+                    var response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{g.HomeTeamID}");
                     var apiResponse = await response.Content.ReadAsStringAsync();
                     homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
 
-                    response = await httpClient.GetAsync($"http://20.62.247.144/api/Team/{g.AwayTeamID}");
+                    response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{g.AwayTeamID}");
                     apiResponse = await response.Content.ReadAsStringAsync();
                     awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
                 }
@@ -196,14 +196,14 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{newGame.HomeTeamID}");
+                var response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{newGame.HomeTeamID}");
                 var apiResponse = await response.Content.ReadAsStringAsync();
                 homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{newGame.AwayTeamID}");
+                var response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{newGame.AwayTeamID}");
                 var apiResponse = await response.Content.ReadAsStringAsync();
                 awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }
@@ -218,7 +218,7 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.PostAsJsonAsync($"http://20.185.102.169:80/api/Calendar", eDto);
+                var response = await httpClient.PostAsJsonAsync($"http://10.0.6.107/api/Calendar", eDto);
             }
             
             await _repo.CommitSave();
@@ -258,11 +258,11 @@ namespace Service
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{editedGame.HomeTeamID}");
+                var response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{editedGame.HomeTeamID}");
                 var apiResponse = await response.Content.ReadAsStringAsync();
                 homeTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
 
-                response = await httpClient.GetAsync($"http://20.62.247.144:80/api/Team/{editedGame.AwayTeamID}");
+                response = await httpClient.GetAsync($"http://10.0.118.116/api/Team/{editedGame.AwayTeamID}");
                 apiResponse = await response.Content.ReadAsStringAsync();
                 awayTeam = JsonConvert.DeserializeObject<Team>(apiResponse);
             }

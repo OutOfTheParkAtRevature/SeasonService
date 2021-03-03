@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: season-service
-          image: outofthepark15226.azurecr.io/season-service
+          image: outoftheparkacr.azurecr.io/season-service
           imagePullPolicy: Always
           ports:
             - containerPort: 80

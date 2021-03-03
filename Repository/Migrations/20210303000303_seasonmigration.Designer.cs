@@ -10,8 +10,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(SeasonContext))]
-    [Migration("20210224200140_InitializeSeasonDB")]
-    partial class InitializeSeasonDB
+    [Migration("20210303000303_seasonmigration")]
+    partial class seasonmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

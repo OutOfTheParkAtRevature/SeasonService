@@ -15,6 +15,7 @@ namespace SeasonService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GameController : ControllerBase
     {
         private readonly Logic _logic;
