@@ -33,7 +33,7 @@ metadata:
   namespace: default
 spec:
   ports:
-    - name: season-service
+    - name: season-http
       protocol: TCP
       port: 80
       targetPort: 80
